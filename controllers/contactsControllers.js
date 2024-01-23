@@ -1,11 +1,30 @@
-import contactsService from "../services/contactsServices.js";
+const contactsService = require("../services/contactsServices");
 
-export const getAllContacts = (req, res) => {};
+// const express = require("express");
 
-export const getOneContact = (req, res) => {};
+const getAllContacts = async (req, res) => {
+  try {
+    const result = await contactsService.listContacts();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({
+      message: "server error",
+    });
+  }
+};
 
-export const deleteContact = (req, res) => {};
+const getOneContact = (req, res) => {};
 
-export const createContact = (req, res) => {};
+const deleteContact = (req, res) => {};
 
-export const updateContact = (req, res) => {};
+const createContact = (req, res) => {};
+
+const updateContact = (req, res) => {};
+
+module.exports = {
+  getAllContacts,
+  getOneContact,
+  deleteContact,
+  createContact,
+  updateContact,
+};
