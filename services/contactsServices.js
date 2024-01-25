@@ -38,6 +38,17 @@ async function addContact({ name, email, phone }) {
 }
 
 const updateById = async (id, data) => {
+  function isEmpty(data) {
+    for (let key in data) {
+      return false;
+    }
+    return true;
+  }
+  const empty = isEmpty(data);
+
+  if (empty) {
+    return null;
+  }
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
