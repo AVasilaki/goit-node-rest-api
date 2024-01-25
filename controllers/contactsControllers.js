@@ -1,25 +1,64 @@
 const contactsService = require("../services/contactsServices");
+const HttpError = require("../helpers/HttpError");
+const Joi = require("joi");
 
-// const express = require("express");
-
-const getAllContacts = async (req, res) => {
+const getAllContacts = async (req, res, next) => {
   try {
     const result = await contactsService.listContacts();
-    res.json(result);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({
-      message: "server error",
-    });
+    next(error);
   }
 };
 
-const getOneContact = (req, res) => {};
+const getOneContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await contactsService.getContactById(id);
+    if (!result) {
+      throw HttpError(404);
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const deleteContact = (req, res) => {};
+const deleteContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await contactsService.removeContact(id);
+    if (!result) {
+      throw HttpError(404);
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const createContact = (req, res) => {};
+const createContact = async (req, res, next) => {
+  try {
+    const result = await contactsService.addContact(req.body);
+    res.status(201).json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
-const updateContact = (req, res) => {};
+const updateContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    // const { name, email, phone } = req.body;
+    const result = await contactsService.updateById(id, req.body);
+    if (!result) {
+      throw HttpError(404);
+    }
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   getAllContacts,
