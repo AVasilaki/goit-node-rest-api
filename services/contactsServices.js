@@ -47,7 +47,7 @@ const updateById = async (id, data) => {
   const empty = isEmpty(data);
 
   if (empty) {
-    return null;
+    return "empty";
   }
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);

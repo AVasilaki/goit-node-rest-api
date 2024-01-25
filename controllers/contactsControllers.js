@@ -52,7 +52,7 @@ const updateContact = async (req, res, next) => {
 
     const result = await contactsService.updateById(id, req.body);
 
-    if (result === null) {
+    if (result === "empty") {
       return res.status(400).json({ message: "Body must have at least one field" });
     }
     if (!result) {
