@@ -49,12 +49,13 @@ const updateById = async (id, data) => {
   if (empty) {
     return "empty";
   }
+
   const contacts = await listContacts();
   const index = contacts.findIndex((item) => item.id === id);
   if (index === -1) {
     return null;
   }
-  contact = contacts[index];
+  const contact = contacts[index];
   contacts[index] = { id, ...contact, ...data };
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return contacts[index];
