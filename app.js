@@ -4,7 +4,7 @@ const mongooss = require("mongoose");
 
 const app = express();
 const DB_HOST =
-  "mongodb+srv://Oleksandr:@cluster0.m7p62sz.mongodb.net/contacts_holder?retryWrites=true&w=majority";
+  "";
 mongooss
   .connect(DB_HOST)
   .then(() => console.log("Database connect succes"))
