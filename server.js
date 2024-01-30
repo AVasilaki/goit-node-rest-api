@@ -1,8 +1,10 @@
 const app = require("./app");
-const mongooss = require("mongoose");
-const { DB_HOST } = process.env;
+const mongoose = require("mongoose");
 
-mongooss
+const { DB_HOST } = process.env;
+mongoose.set("strictQuery", true);
+
+mongoose
   .connect(DB_HOST)
   .then(() => {
     app.listen(3000);

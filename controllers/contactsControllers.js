@@ -1,10 +1,11 @@
 const contactsService = require("../services/contactsServices");
+const { Contact } = require("../models/contact");
 const HttpError = require("../helpers/HttpError");
 const Joi = require("joi");
 
 const getAllContacts = async (req, res, next) => {
   try {
-    const result = await contactsService.listContacts();
+    const result = await Contact.find();
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -14,7 +15,7 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await contactsService.getContactById(id);
+    const result = await Contact.findById(id);
     if (!result) {
       throw HttpError(404);
     }
@@ -24,22 +25,23 @@ const getOneContact = async (req, res, next) => {
   }
 };
 
-const deleteContact = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const result = await contactsService.removeContact(id);
-    if (!result) {
-      throw HttpError(404);
-    }
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-};
+// const deleteContact = async (req, res, next) => {
+//   try {
+//     const { id } = req.params;
+//     const result = await contactsService.removeContact(id);
+//     if (!result) {
+//       throw HttpError(404);
+//     }
+//     res.status(200).json(result);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const createContact = async (req, res, next) => {
+  console.log("🚀 ~ createContact ~ req:", req.body);
   try {
-    const result = await contactsService.addContact(req.body);
+    const result = await Contact.create(req.body);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -67,7 +69,7 @@ const updateContact = async (req, res, next) => {
 module.exports = {
   getAllContacts,
   getOneContact,
-  deleteContact,
+  // deleteContact,
   createContact,
   updateContact,
 };
