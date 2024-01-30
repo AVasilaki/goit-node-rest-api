@@ -15,6 +15,10 @@ const updateContactSchema = Joi.object({
   favorite: Joi.boolean().optional(),
 });
 
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
 const contactSchema = new Schema(
   {
     name: { type: String, required: [true, "Set name for contact"] },
@@ -32,5 +36,5 @@ contactSchema.post("save", (error, date, next) => {
 });
 
 const Contact = model("contact", contactSchema);
-// module.exports = Contact;
-module.exports = { createContactSchema, updateContactSchema, Contact };
+
+module.exports = { createContactSchema, updateContactSchema, updateFavoriteSchema, Contact };
