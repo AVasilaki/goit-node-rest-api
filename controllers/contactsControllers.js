@@ -1,10 +1,10 @@
-const contactsService = require("../services/contactsServices");
+const { Contact } = require("../models/contact");
 const HttpError = require("../helpers/HttpError");
 const Joi = require("joi");
 
 const getAllContacts = async (req, res, next) => {
   try {
-    const result = await contactsService.listContacts();
+    const result = await Contact.find();
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -14,7 +14,7 @@ const getAllContacts = async (req, res, next) => {
 const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await contactsService.getContactById(id);
+    const result = await Contact.findById(id);
     if (!result) {
       throw HttpError(404);
     }
@@ -27,7 +27,7 @@ const getOneContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await contactsService.removeContact(id);
+    const result = await Contact.findByIdAndDelete(id);
     if (!result) {
       throw HttpError(404);
     }
@@ -39,7 +39,7 @@ const deleteContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const result = await contactsService.addContact(req.body);
+    const result = await Contact.create(req.body);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -50,7 +50,25 @@ const updateContact = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const result = await contactsService.updateById(id, req.body);
+    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+
+    if (result === "empty") {
+      return res.status(400).json({ message: "Body must have at least one field" });
+    }
+    if (!result) {
+      throw HttpError(404);
+    }
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updateStatusContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
 
     if (result === "empty") {
       return res.status(400).json({ message: "Body must have at least one field" });
@@ -70,4 +88,5 @@ module.exports = {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact,
 };

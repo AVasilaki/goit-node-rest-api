@@ -1,11 +1,10 @@
 const express = require("express");
-
 const contactsRouter = require("./routes/contactsRouter");
+require("dotenv").config();
 
 const app = express();
 
 app.use(express.json());
-
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {
@@ -17,6 +16,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on port: 3000");
-});
+module.exports = app;
