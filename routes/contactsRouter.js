@@ -10,7 +10,7 @@ contactsRouter.get("/", contacts.getAllContacts);
 
 contactsRouter.get("/:id", isValidId, contacts.getOneContact);
 
-contactsRouter.delete("/:id", contacts.deleteContact);
+contactsRouter.delete("/:id", isValidId, contacts.deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), contacts.createContact);
 
