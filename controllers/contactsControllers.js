@@ -4,7 +4,8 @@ const Joi = require("joi");
 
 const getAllContacts = async (req, res, next) => {
   try {
-    const result = await Contact.find();
+    const { _id: owner } = req.user;
+    const result = await Contact.find({ owner }).populate("owner", "name");
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -39,7 +40,9 @@ const deleteContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
   try {
-    const result = await Contact.create(req.body);
+    const { _id: owner } = req.user;
+    console.log("🚀 ~ createContact ~ owner:", owner);
+    const result = await Contact.create({ ...req.body, owner });
     res.status(201).json(result);
   } catch (error) {
     next(error);
