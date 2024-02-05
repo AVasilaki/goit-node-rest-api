@@ -4,8 +4,10 @@ const Joi = require("joi");
 
 const getAllContacts = async (req, res, next) => {
   try {
+    const { page = 1, limit = 3 } = req.query;
+    const skip = (page - 1) * limit;
     const { _id: owner } = req.user;
-    const result = await Contact.find({ owner }).populate("owner", "name");
+    const result = await Contact.find({ owner }, "", { skip, limit }).populate("owner", "name");
     res.status(200).json(result);
   } catch (error) {
     next(error);
