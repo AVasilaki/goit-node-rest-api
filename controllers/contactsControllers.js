@@ -59,8 +59,15 @@ const updateContact = async (req, res, next) => {
     const { _id } = req.user;
     const { id } = req.params;
     const result = await Contact.findByIdAndUpdate({ _id: id, owner: _id }, req.body, { new: true });
+    function isEmpty(data) {
+      for (let key in data) {
+        return false;
+      }
+      return true;
+    }
+    const empty = isEmpty(req.body);
 
-    if (result === "empty") {
+    if (empty) {
       return res.status(400).json({ message: "Body must have at least one field" });
     }
     if (!result) {
