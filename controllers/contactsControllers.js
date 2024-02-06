@@ -16,8 +16,11 @@ const getAllContacts = async (req, res, next) => {
 
 const getOneContact = async (req, res, next) => {
   try {
+    const { _id } = req.user;
+
     const { id } = req.params;
-    const result = await Contact.findById(id);
+
+    const result = await Contact.findById({ _id: id, owner: _id }).populate("owner", "_id subscription email");
     if (!result) {
       throw HttpError(404);
     }
@@ -29,8 +32,9 @@ const getOneContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   try {
+    const { _id } = req.user;
     const { id } = req.params;
-    const result = await Contact.findByIdAndDelete(id);
+    const result = await Contact.findByIdAndDelete({ _id: id, owner: _id });
     if (!result) {
       throw HttpError(404);
     }
@@ -43,7 +47,6 @@ const deleteContact = async (req, res, next) => {
 const createContact = async (req, res, next) => {
   try {
     const { _id: owner } = req.user;
-    console.log("🚀 ~ createContact ~ owner:", owner);
     const result = await Contact.create({ ...req.body, owner });
     res.status(201).json(result);
   } catch (error) {
@@ -53,9 +56,9 @@ const createContact = async (req, res, next) => {
 
 const updateContact = async (req, res, next) => {
   try {
+    const { _id } = req.user;
     const { id } = req.params;
-
-    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    const result = await Contact.findByIdAndUpdate({ _id: id, owner: _id }, req.body, { new: true });
 
     if (result === "empty") {
       return res.status(400).json({ message: "Body must have at least one field" });
@@ -72,8 +75,8 @@ const updateContact = async (req, res, next) => {
 const updateStatusContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-
-    const result = await Contact.findByIdAndUpdate(id, req.body, { new: true });
+    const { _id } = req.user;
+    const result = await Contact.findByIdAndUpdate({ _id: id, owner: _id }, req.body, { new: true });
 
     if (result === "empty") {
       return res.status(400).json({ message: "Body must have at least one field" });
