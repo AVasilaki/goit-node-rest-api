@@ -7,10 +7,10 @@ const path = require("path");
 const fs = require("fs/promises");
 require("dotenv").config();
 const gravatar = require("gravatar");
+const Jimp = require("jimp");
 
 const { SECRET_KEY } = process.env;
 const avatarDir = path.join(__dirname, "../", "public", "avatars");
-console.log("🚀 ~ avatarDir:", avatarDir);
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -74,12 +74,15 @@ const updateSubscription = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { _id } = req.user;
-  // console.log("🚀 ~ updateAvatar ~ _id:", _id);
   const { path: tempUpload, originalname } = req.file;
+
   const filename = `${_id}_${originalname}`;
-  // console.log("🚀 ~ updateAvatar ~ tempUpload:", tempUpload);
   const resultUpload = path.join(avatarDir, filename);
-  await fs.rename(tempUpload, resultUpload);
+  Jimp.read(tempUpload, (err, image) => {
+    if (err) throw err;
+    image.resize(250, 250).write(resultUpload);
+  });
+  await fs.unlink(tempUpload);
   const avatarUrl = path.join("avatars", filename);
   await User.findByIdAndUpdate(_id, { avatarUrl });
   res.json({ avatarUrl });

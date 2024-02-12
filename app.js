@@ -1,9 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-// const upload = require("./middlewares/upload");
-// const path = require("path");
-// const fs = require("fs/promises");
 const contactsRouter = require("./routes/contactsRouter");
 const authRouter = require("./routes/authRouter");
 require("dotenv").config();
