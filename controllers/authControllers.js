@@ -8,6 +8,7 @@ const fs = require("fs/promises");
 require("dotenv").config();
 const gravatar = require("gravatar");
 const Jimp = require("jimp");
+const nanoid = require("nanoid");
 
 const { SECRET_KEY } = process.env;
 const avatarDir = path.join(__dirname, "../", "public", "avatars");
@@ -22,9 +23,14 @@ const register = async (req, res) => {
 
   const avatarUrl = gravatar.url(email);
   const hashPassword = await bcrypt.hash(password, 10);
+  const verificationToken = nanoid();
 
-  const newUser = await User.create({ ...req.body, password: hashPassword, avatarUrl });
-
+  const newUser = await User.create({ ...req.body, password: hashPassword, avatarUrl, verificationToken });
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target="_blanc" href="http://localhost:3000/api/auth/verify/${verificationToken}">Verify email</a>`,
+  };
   res.status(201).json({
     email: newUser.email,
     name: newUser.name,
