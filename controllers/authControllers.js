@@ -46,18 +46,19 @@ const verifyEmail = async (req, res) => {
   const user = await User.findOne({ verificationToken });
 
   if (!user) {
-    throw HttpError(401, "Email not found");
+    throw HttpError(404, "User not found");
   }
 
   await User.findByIdAndUpdate(user._id, { verify: true, verificationToken: "" });
 
-  res.json({
-    message: "Email verify succes",
+  res.status(200).json({
+    message: "Verification successful",
   });
 };
 
 const resendVerifyEmail = async (req, res) => {
   const { email } = req.body;
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -65,7 +66,7 @@ const resendVerifyEmail = async (req, res) => {
   }
 
   if (user.verify) {
-    throw HttpError(401, "Email already verify");
+    throw HttpError(400, "Verification has already been passed");
   }
 
   const verifyEmail = {
@@ -76,8 +77,8 @@ const resendVerifyEmail = async (req, res) => {
 
   await sendMail(verifyEmail);
 
-  res.json({
-    message: "Email verify succes",
+  res.status(200).json({
+    message: "Verification email sent",
   });
 };
 
